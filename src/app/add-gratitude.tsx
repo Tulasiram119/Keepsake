@@ -1,33 +1,33 @@
-import { useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from "expo-router";
+import { useMemo, useState } from "react";
+import { StyleSheet, View } from "react-native";
 
-import { Button } from '@/components/button';
-import { Chip } from '@/components/chip';
-import { DateField } from '@/components/date-field';
-import { FriendPicker } from '@/components/friend-picker';
-import { Screen } from '@/components/screen';
-import { ScreenHeader } from '@/components/screen-header';
-import { TextField } from '@/components/text-field';
-import { ThemedText } from '@/components/themed-text';
-import { appActions, useFriends, useGratitude } from '@/store/hooks';
-import { useTheme } from '@/theme/use-theme';
-import type { ID } from '@/types/models';
-import { confirm } from '@/utils/confirm';
+import { Button } from "@/components/button";
+import { Chip } from "@/components/chip";
+import { DateField } from "@/components/date-field";
+import { FriendPicker } from "@/components/friend-picker";
+import { Screen } from "@/components/screen";
+import { ScreenHeader } from "@/components/screen-header";
+import { TextField } from "@/components/text-field";
+import { ThemedText } from "@/components/themed-text";
+import { appActions, useFriends, useGratitude } from "@/store/hooks";
+import { useTheme } from "@/theme/use-theme";
+import type { ID } from "@/types/models";
+import { confirm } from "@/utils/confirm";
 
 const GRATITUDE_TAGS = [
-  'health',
-  'work',
-  'family',
-  'friends',
-  'nature',
-  'small joys',
+  "health",
+  "work",
+  "family",
+  "friends",
+  "nature",
+  "small joys",
 ] as const;
 
 const PLACEHOLDERS = [
-  'What made you smile today?',
-  'Who helped you recently?',
-  'A small moment worth keeping…',
+  "What made you smile today?",
+  "Who helped you recently?",
+  "A small moment worth keeping…",
 ];
 
 export default function AddGratitudeModal() {
@@ -54,7 +54,7 @@ export default function AddGratitudeModal() {
     [],
   );
 
-  const [text, setText] = useState<string>(existingEntry?.text ?? '');
+  const [text, setText] = useState<string>(existingEntry?.text ?? "");
   const [date, setDate] = useState<string>(
     existingEntry?.date ?? new Date().toISOString(),
   );
@@ -85,9 +85,9 @@ export default function AddGratitudeModal() {
   const handleDelete = async () => {
     if (!entryId) return;
     const ok = await confirm({
-      title: 'Delete gratitude note?',
-      message: 'This gratitude note will be removed from your journal.',
-      confirmLabel: 'Delete',
+      title: "Delete gratitude note?",
+      message: "This gratitude note will be removed from your journal.",
+      confirmLabel: "Delete",
       destructive: true,
     });
     if (ok) {
@@ -103,7 +103,7 @@ export default function AddGratitudeModal() {
   return (
     <Screen scroll padded>
       <ScreenHeader
-        title={isEditing ? 'Edit gratitude' : 'Gratitude note'}
+        title={isEditing ? "Edit gratitude" : "Gratitude note"}
         subtitle="Notice the good, big or small"
       />
 
@@ -120,12 +120,7 @@ export default function AddGratitudeModal() {
       />
 
       {/* Date */}
-      <DateField
-        label="Date"
-        value={date}
-        onChange={setDate}
-        mode="past"
-      />
+      <DateField label="Date" value={date} onChange={setDate} mode="past" />
 
       {/* Linked Friends */}
       <View style={{ marginBottom: spacing.lg }}>
@@ -180,18 +175,14 @@ export default function AddGratitudeModal() {
 
       <View style={{ marginTop: spacing.lg, gap: spacing.md }}>
         <Button
-          label={isEditing ? 'Save changes' : 'Save note'}
+          label={isEditing ? "Save changes" : "Save note"}
           onPress={handleSave}
           disabled={!canSave}
           variant="primary"
         />
 
         {isEditing ? (
-          <Button
-            label="Delete note"
-            onPress={handleDelete}
-            variant="danger"
-          />
+          <Button label="Delete note" onPress={handleDelete} variant="danger" />
         ) : null}
 
         <Button label="Cancel" onPress={() => router.back()} variant="ghost" />
@@ -203,11 +194,11 @@ export default function AddGratitudeModal() {
 const styles = StyleSheet.create({
   textArea: {
     minHeight: 110,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   chipsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
   },
 });

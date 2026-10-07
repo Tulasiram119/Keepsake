@@ -1,32 +1,32 @@
-import { useMemo, useState } from 'react';
-import { Linking, StyleSheet, View } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from "expo-router";
+import { useMemo, useState } from "react";
+import { Linking, StyleSheet, View } from "react-native";
 
-import { Avatar } from '@/components/avatar';
-import { Button } from '@/components/button';
-import { Card } from '@/components/card';
-import { EmptyState } from '@/components/empty-state';
-import { GratitudeCard } from '@/components/gratitude-card';
-import { IconButton } from '@/components/icon-button';
-import { PlanContactPanel } from '@/components/plan-contact-panel';
-import { Screen } from '@/components/screen';
-import { SectionTitle } from '@/components/section-title';
-import { StatusPill } from '@/components/status-pill';
-import { ThemedText } from '@/components/themed-text';
-import { TimelineItem } from '@/components/timeline-item';
+import { Avatar } from "@/components/avatar";
+import { Button } from "@/components/button";
+import { Card } from "@/components/card";
+import { EmptyState } from "@/components/empty-state";
+import { GratitudeCard } from "@/components/gratitude-card";
+import { IconButton } from "@/components/icon-button";
+import { PlanContactPanel } from "@/components/plan-contact-panel";
+import { Screen } from "@/components/screen";
+import { SectionTitle } from "@/components/section-title";
+import { StatusPill } from "@/components/status-pill";
+import { ThemedText } from "@/components/themed-text";
+import { TimelineItem } from "@/components/timeline-item";
 import {
   useFriend,
   useFriends,
   useGratitude,
   useInteractions,
-} from '@/store/hooks';
-import { useTheme } from '@/theme/use-theme';
+} from "@/store/hooks";
+import { useTheme } from "@/theme/use-theme";
 import {
   daysUntilBirthday,
   formatBirthday,
   formatDayTime,
   relativeDays,
-} from '@/utils/dates';
+} from "@/utils/dates";
 import {
   contactStatus,
   daysUntilDue,
@@ -35,8 +35,8 @@ import {
   interactionsForFriend,
   lastInteractionFor,
   statusMessage,
-} from '@/utils/derived';
-import { INTERACTION_META } from '@/utils/interaction-meta';
+} from "@/utils/derived";
+import { INTERACTION_META } from "@/utils/interaction-meta";
 
 export default function FriendDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -73,7 +73,7 @@ export default function FriendDetailScreen() {
           title="This friend isn't here anymore"
           message="This profile may have been deleted or does not exist."
           actionLabel="Back to friends"
-          onAction={() => router.replace('/(tabs)/friends')}
+          onAction={() => router.replace("/(tabs)/friends")}
         />
       </Screen>
     );
@@ -83,7 +83,7 @@ export default function FriendDetailScreen() {
   const dueDays = daysUntilDue(friend, lastContact, now);
   const gentleMsg = statusMessage({ friend, status, daysUntilDue: dueDays });
 
-  let birthdayText = '';
+  let birthdayText = "";
   if (friend.birthday) {
     try {
       const bdayStr = formatBirthday(friend.birthday);
@@ -110,7 +110,11 @@ export default function FriendDetailScreen() {
           tone="neutral"
           onPress={() => router.back()}
         />
-        <ThemedText variant="subheading" style={styles.topBarTitle} numberOfLines={1}>
+        <ThemedText
+          variant="subheading"
+          style={styles.topBarTitle}
+          numberOfLines={1}
+        >
           {friend.name}
         </ThemedText>
         <IconButton
@@ -128,11 +132,15 @@ export default function FriendDetailScreen() {
           {friend.name}
         </ThemedText>
 
-        <ThemedText variant="small" color="textSecondary" style={{ marginTop: 2 }}>
-          {[friend.group, friend.howWeMet].filter(Boolean).join(' · ')}
+        <ThemedText
+          variant="small"
+          color="textSecondary"
+          style={{ marginTop: 2 }}
+        >
+          {[friend.group, friend.howWeMet].filter(Boolean).join(" · ")}
         </ThemedText>
 
-        {status !== 'none' ? (
+        {status !== "none" ? (
           <View style={{ marginTop: spacing.sm }}>
             <StatusPill status={status} daysUntilDue={dueDays} />
           </View>
@@ -142,7 +150,7 @@ export default function FriendDetailScreen() {
           <ThemedText
             variant="smallStrong"
             color="primary"
-            style={{ marginTop: spacing.xs, textAlign: 'center' }}
+            style={{ marginTop: spacing.xs, textAlign: "center" }}
           >
             {gentleMsg}
           </ThemedText>
@@ -160,12 +168,19 @@ export default function FriendDetailScreen() {
       </View>
 
       {/* Quick Actions Row */}
-      <View style={[styles.actionsRow, { gap: spacing.sm, marginBottom: spacing.lg }]}>
+      <View
+        style={[
+          styles.actionsRow,
+          { gap: spacing.sm, marginBottom: spacing.lg },
+        ]}
+      >
         <Button
           label="Log moment"
           icon="cafe-outline"
           variant="primary"
-          onPress={() => router.push(`/log-interaction?friendId=${friend.id}` as any)}
+          onPress={() =>
+            router.push(`/log-interaction?friendId=${friend.id}` as any)
+          }
           style={{ flex: 1 }}
         />
         {friend.phone ? (
@@ -180,7 +195,9 @@ export default function FriendDetailScreen() {
           label="Gratitude"
           icon="heart-outline"
           variant="secondary"
-          onPress={() => router.push(`/add-gratitude?friendId=${friend.id}` as any)}
+          onPress={() =>
+            router.push(`/add-gratitude?friendId=${friend.id}` as any)
+          }
         />
       </View>
 
@@ -199,7 +216,7 @@ export default function FriendDetailScreen() {
         <ThemedText variant="body" style={{ marginBottom: spacing.md }}>
           {friend.repeatEveryDays
             ? `Every ${friend.repeatEveryDays} days`
-            : 'No rhythm set'}
+            : "No rhythm set"}
         </ThemedText>
 
         <ThemedText variant="smallStrong" color="textSecondary">
@@ -210,12 +227,12 @@ export default function FriendDetailScreen() {
             ? `${formatDayTime(friend.nextPlanned.at, now)} (${
                 INTERACTION_META[friend.nextPlanned.type].label
               })`
-            : 'Nothing planned yet'}
+            : "Nothing planned yet"}
         </ThemedText>
 
         {!isPlanning ? (
           <Button
-            label={friend.nextPlanned ? 'Change plan' : 'Plan next contact'}
+            label={friend.nextPlanned ? "Change plan" : "Plan next contact"}
             variant="secondary"
             onPress={() => setIsPlanning(true)}
             style={{ marginTop: spacing.xs }}
@@ -246,7 +263,9 @@ export default function FriendDetailScreen() {
       <SectionTitle
         title="Moments"
         actionLabel="+ Log"
-        onAction={() => router.push(`/log-interaction?friendId=${friend.id}` as any)}
+        onAction={() =>
+          router.push(`/log-interaction?friendId=${friend.id}` as any)
+        }
       />
       {friendInteractions.length === 0 ? (
         <Card tone="surfaceAlt" style={styles.emptyCard}>
@@ -260,7 +279,9 @@ export default function FriendDetailScreen() {
             key={i.id}
             interaction={i}
             now={now}
-            onPress={() => router.push(`/log-interaction?interactionId=${i.id}` as any)}
+            onPress={() =>
+              router.push(`/log-interaction?interactionId=${i.id}` as any)
+            }
           />
         ))
       )}
@@ -269,7 +290,9 @@ export default function FriendDetailScreen() {
       <SectionTitle
         title="Grateful for"
         actionLabel="+ Add"
-        onAction={() => router.push(`/add-gratitude?friendId=${friend.id}` as any)}
+        onAction={() =>
+          router.push(`/add-gratitude?friendId=${friend.id}` as any)
+        }
       />
       {friendGratitude.length === 0 ? (
         <Card tone="surfaceAlt" style={styles.emptyCard}>
@@ -294,26 +317,26 @@ export default function FriendDetailScreen() {
 
 const styles = StyleSheet.create({
   topBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   topBarTitle: {
     flex: 1,
-    textAlign: 'center',
+    textAlign: "center",
     marginHorizontal: 8,
   },
   hero: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   actionsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   emptyCard: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 20,
     marginBottom: 8,
   },
