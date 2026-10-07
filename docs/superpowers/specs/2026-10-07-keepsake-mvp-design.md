@@ -103,8 +103,13 @@ Overdue uses amber/coral, never red; copy is gentle ("It's been a while").
 
 ### Navigation & screens (Expo Router)
 
+Expo SDK 57 keeps routes in `src/app/` (template convention); JS `Tabs`
+are bundled in `expo-router`. Web uses `"output": "single"` (client-only SPA)
+because all data is device-local. Dates are picked with a custom `DateField`
+(day steppers + quick chips) that works identically on iOS, Android and web.
+
 ```
-app/
+src/app/
   _layout.tsx               # fonts, hydration gate, theme, Stack
   (tabs)/_layout.tsx        # bottom tabs
   (tabs)/index.tsx          # Home dashboard + FAB
