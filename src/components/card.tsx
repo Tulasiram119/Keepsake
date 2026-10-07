@@ -10,7 +10,7 @@ import {
 
 import { useTheme } from '@/theme/use-theme';
 
-export type CardTone = 'surface' | 'accent' | 'warning' | 'success';
+export type CardTone = 'surface' | 'surfaceAlt' | 'accent' | 'warning' | 'success';
 
 export interface CardProps extends ViewProps {
   tone?: CardTone;
@@ -29,6 +29,7 @@ export function Card({
 
   const toneBg: Record<CardTone, string> = {
     surface: colors.surface,
+    surfaceAlt: colors.surfaceAlt,
     accent: colors.accentSoft,
     warning: colors.warningSoft,
     success: colors.successSoft,
