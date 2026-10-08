@@ -14,6 +14,10 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 
+import { Platform } from 'react-native';
+
+import { syncAllNotifications } from '@/services/notifications';
+import { useAppStore } from '@/store';
 import { useHasHydrated } from '@/store/hooks';
 import { useTheme } from '@/theme/use-theme';
 
@@ -34,6 +38,9 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsLoaded && hasHydrated) {
       void SplashScreen.hideAsync();
+      if (Platform.OS !== 'web') {
+        void syncAllNotifications(useAppStore.getState());
+      }
     }
   }, [fontsLoaded, hasHydrated]);
 
