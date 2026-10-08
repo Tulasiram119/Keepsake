@@ -1,10 +1,12 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import { Linking, StyleSheet, View } from "react-native";
+import { format, parseISO } from "date-fns";
 
 import { Avatar } from "@/components/avatar";
 import { Button } from "@/components/button";
 import { Card } from "@/components/card";
+import { Chip } from "@/components/chip";
 import { EmptyState } from "@/components/empty-state";
 import { GratitudeCard } from "@/components/gratitude-card";
 import { IconButton } from "@/components/icon-button";
@@ -14,7 +16,10 @@ import { SectionTitle } from "@/components/section-title";
 import { StatusPill } from "@/components/status-pill";
 import { ThemedText } from "@/components/themed-text";
 import { TimelineItem } from "@/components/timeline-item";
+import { syncAllNotifications } from "@/services/notifications";
+import { useAppStore } from "@/store";
 import {
+  appActions,
   useFriend,
   useFriends,
   useGratitude,
@@ -33,6 +38,7 @@ import {
   formatLastContact,
   gratitudeForFriend,
   interactionsForFriend,
+  isSnoozed,
   lastInteractionFor,
   statusMessage,
 } from "@/utils/derived";
@@ -47,6 +53,7 @@ export default function FriendDetailScreen() {
   const { colors, radius, spacing } = useTheme();
 
   const [isPlanning, setIsPlanning] = useState(false);
+  const [showSnoozeMenu, setShowSnoozeMenu] = useState(false);
 
   const now = useMemo(() => new Date(), []);
 
@@ -98,6 +105,25 @@ export default function FriendDetailScreen() {
     if (friend.phone) {
       void Linking.openURL(`tel:${friend.phone}`);
     }
+  };
+
+  const snoozed = isSnoozed(friend, now);
+
+  const handleSnooze = (days: number) => {
+    appActions().snoozeFriend(friend.id, days);
+    void syncAllNotifications(useAppStore.getState());
+    setShowSnoozeMenu(false);
+  };
+
+  const handleSkipCycle = () => {
+    appActions().skipCycle(friend.id);
+    void syncAllNotifications(useAppStore.getState());
+    setShowSnoozeMenu(false);
+  };
+
+  const handleClearSnooze = () => {
+    appActions().clearSnooze(friend.id);
+    void syncAllNotifications(useAppStore.getState());
   };
 
   return (
@@ -213,11 +239,72 @@ export default function FriendDetailScreen() {
         <ThemedText variant="smallStrong" color="textSecondary">
           Stay in touch cadence
         </ThemedText>
-        <ThemedText variant="body" style={{ marginBottom: spacing.md }}>
+        <ThemedText variant="body" style={{ marginBottom: spacing.xs }}>
           {friend.repeatEveryDays
             ? `Every ${friend.repeatEveryDays} days`
             : "No rhythm set"}
         </ThemedText>
+
+        {friend.repeatEveryDays ? (
+          <View style={{ marginBottom: spacing.md }}>
+            {snoozed && friend.snoozedUntil ? (
+              <View
+                style={[
+                  styles.snoozeRow,
+                  {
+                    backgroundColor: colors.surfaceAlt,
+                    borderRadius: radius.md,
+                    padding: spacing.sm,
+                    marginTop: spacing.xs,
+                  },
+                ]}
+              >
+                <ThemedText variant="smallStrong" color="secondary" style={{ flex: 1 }}>
+                  Snoozed until {format(parseISO(friend.snoozedUntil), 'MMM d, yyyy')}
+                </ThemedText>
+                <Button
+                  label="Clear"
+                  variant="ghost"
+                  onPress={handleClearSnooze}
+                />
+              </View>
+            ) : (
+              <View style={{ marginTop: spacing.xs }}>
+                {!showSnoozeMenu ? (
+                  <Button
+                    label="Snooze or skip..."
+                    variant="ghost"
+                    onPress={() => setShowSnoozeMenu(true)}
+                  />
+                ) : (
+                  <View style={{ marginTop: spacing.xs }}>
+                    <ThemedText
+                      variant="small"
+                      color="textSecondary"
+                      style={{ marginBottom: spacing.xs }}
+                    >
+                      Pause reminders for:
+                    </ThemedText>
+                    <View style={[styles.chipsRow, { gap: spacing.xs, marginBottom: spacing.xs }]}>
+                      <Chip label="1 day" onPress={() => handleSnooze(1)} />
+                      <Chip label="3 days" onPress={() => handleSnooze(3)} />
+                      <Chip label="1 week" onPress={() => handleSnooze(7)} />
+                      <Chip
+                        label={`Skip cycle (+${friend.repeatEveryDays}d)`}
+                        onPress={handleSkipCycle}
+                      />
+                    </View>
+                    <Button
+                      label="Cancel"
+                      variant="ghost"
+                      onPress={() => setShowSnoozeMenu(false)}
+                    />
+                  </View>
+                )}
+              </View>
+            )}
+          </View>
+        ) : null}
 
         <ThemedText variant="smallStrong" color="textSecondary">
           Next planned contact
@@ -339,5 +426,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 20,
     marginBottom: 8,
+  },
+  snoozeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  chipsRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
   },
 });
