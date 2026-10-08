@@ -89,6 +89,10 @@ export default function RootLayout() {
           name="add-gratitude"
           options={{ presentation: 'modal' }}
         />
+        <Stack.Screen
+          name="import-preview"
+          options={{ presentation: 'modal' }}
+        />
       </Stack>
     </ThemeProvider>
   );

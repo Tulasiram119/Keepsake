@@ -103,7 +103,7 @@ export default function SettingsScreen() {
         Alert.alert('Unable to Import Backup', res.message);
         return;
       }
-      router.push('/import-preview' as unknown as Parameters<typeof router.push>[0]);
+      router.push('/import-preview');
     } catch (err) {
       Alert.alert('Import Error', err instanceof Error ? err.message : 'Could not read backup file.');
     } finally {
