@@ -6,6 +6,7 @@ import { Button } from "@/components/button";
 import { Chip } from "@/components/chip";
 import { DateField } from "@/components/date-field";
 import { FriendPicker } from "@/components/friend-picker";
+import { IconButton } from "@/components/icon-button";
 import { Screen } from "@/components/screen";
 import { ScreenHeader } from "@/components/screen-header";
 import { TextField } from "@/components/text-field";
@@ -105,6 +106,14 @@ export default function AddGratitudeModal() {
       <ScreenHeader
         title={isEditing ? "Edit gratitude" : "Gratitude note"}
         subtitle="Notice the good, big or small"
+        right={
+          <IconButton
+            icon="close"
+            accessibilityLabel="Close"
+            tone="neutral"
+            onPress={() => router.back()}
+          />
+        }
       />
 
       {/* Note Text */}

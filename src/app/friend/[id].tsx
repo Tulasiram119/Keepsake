@@ -129,20 +129,13 @@ export default function FriendDetailScreen() {
   return (
     <Screen scroll padded>
       {/* Header bar */}
-      <View style={[styles.topBar, { marginBottom: spacing.md }]}>
+      <View style={[styles.topBar, { marginBottom: spacing.xs }]}>
         <IconButton
           icon="arrow-back"
           accessibilityLabel="Back"
           tone="neutral"
           onPress={() => router.back()}
         />
-        <ThemedText
-          variant="subheading"
-          style={styles.topBarTitle}
-          numberOfLines={1}
-        >
-          {friend.name}
-        </ThemedText>
         <IconButton
           icon="create-outline"
           accessibilityLabel="Edit profile"
@@ -407,11 +400,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-  },
-  topBarTitle: {
-    flex: 1,
-    textAlign: "center",
-    marginHorizontal: 8,
   },
   hero: {
     alignItems: "center",

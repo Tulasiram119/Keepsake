@@ -38,7 +38,7 @@ export default function HomeScreen() {
 
   return (
     <Screen padded={false}>
-      <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.md }}>
+      <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xs }}>
         <ScreenHeader
           eyebrow={greeting}
           title="How long has it been?"

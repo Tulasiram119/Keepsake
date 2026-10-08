@@ -81,7 +81,7 @@ export default function GratitudeScreen() {
 
   return (
     <Screen padded={false}>
-      <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.md }}>
+      <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xs }}>
         <ScreenHeader
           eyebrow="Moments of thankfulness"
           title="Gratitude"

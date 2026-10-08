@@ -15,6 +15,7 @@
         "backgroundColor": "#000000",
         "foregroundImage": "./assets/friend_13350962.png"
       },
+      "softwareKeyboardLayoutMode": "pan",
       "predictiveBackGestureEnabled": false,
       "package": "com.tulasiram119.keepsake"
     },

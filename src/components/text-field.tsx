@@ -25,13 +25,15 @@ export function TextField({
 
   return (
     <View style={[styles.container, { marginBottom: spacing.md }]}>
-      <ThemedText
-        variant="smallStrong"
-        color="textSecondary"
-        style={{ marginBottom: spacing.xs }}
-      >
-        {label}
-      </ThemedText>
+      {label ? (
+        <ThemedText
+          variant="smallStrong"
+          color="textSecondary"
+          style={{ marginBottom: spacing.xs }}
+        >
+          {label}
+        </ThemedText>
+      ) : null}
       <TextInput
         placeholderTextColor={colors.textSecondary}
         style={[

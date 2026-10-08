@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 
 import { Button } from '@/components/button';
 import { Chip } from '@/components/chip';
+import { IconButton } from '@/components/icon-button';
 import { Screen } from '@/components/screen';
 import { ScreenHeader } from '@/components/screen-header';
 import { TextField } from '@/components/text-field';
@@ -121,6 +122,14 @@ export default function FriendEditScreen() {
           isEditing
             ? 'Update relationship details'
             : 'Add someone you want to keep in touch with'
+        }
+        right={
+          <IconButton
+            icon="close"
+            accessibilityLabel="Close"
+            tone="neutral"
+            onPress={() => router.back()}
+          />
         }
       />
 

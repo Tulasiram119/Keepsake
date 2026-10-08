@@ -71,29 +71,23 @@ export default function RootLayout() {
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
       <Stack
         screenOptions={{
-          headerStyle: { backgroundColor: colors.background },
-          headerTintColor: colors.text,
-          headerTitleStyle: {
-            fontFamily: fonts.display,
-            fontSize: 20,
-          },
-          headerShadowVisible: false,
+          headerShown: false,
           contentStyle: { backgroundColor: colors.background },
         }}
       >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="friend/[id]" options={{ title: 'Friend' }} />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="friend/[id]" />
         <Stack.Screen
           name="friend/edit"
-          options={{ presentation: 'modal', title: 'Friend' }}
+          options={{ presentation: 'modal' }}
         />
         <Stack.Screen
           name="log-interaction"
-          options={{ presentation: 'modal', title: 'Log a moment' }}
+          options={{ presentation: 'modal' }}
         />
         <Stack.Screen
           name="add-gratitude"
-          options={{ presentation: 'modal', title: 'Gratitude' }}
+          options={{ presentation: 'modal' }}
         />
       </Stack>
     </ThemeProvider>

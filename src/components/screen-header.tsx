@@ -15,7 +15,7 @@ export function ScreenHeader({ eyebrow, title, subtitle, right }: ScreenHeaderPr
   const { colors, fonts, spacing } = useTheme();
 
   return (
-    <View style={[styles.container, { marginBottom: spacing.lg }]}>
+    <View style={[styles.container, { marginBottom: spacing.md }]}>
       <View style={styles.textColumn}>
         {eyebrow ? (
           <ThemedText

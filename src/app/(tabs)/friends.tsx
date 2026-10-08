@@ -55,7 +55,7 @@ export default function FriendsScreen() {
 
   return (
     <Screen padded={false}>
-      <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.md }}>
+      <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xs }}>
         <ScreenHeader
           eyebrow="Connections"
           title="Friends"
@@ -106,6 +106,8 @@ export default function FriendsScreen() {
       <FlatList
         data={filteredFriends}
         keyExtractor={(item) => item.id}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         contentContainerStyle={{
           paddingHorizontal: spacing.lg,
           paddingBottom: spacing.xxl,

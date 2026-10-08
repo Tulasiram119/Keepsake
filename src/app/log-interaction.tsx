@@ -7,6 +7,7 @@ import { Button } from '@/components/button';
 import { DateField } from '@/components/date-field';
 import { EmptyState } from '@/components/empty-state';
 import { FriendPicker } from '@/components/friend-picker';
+import { IconButton } from '@/components/icon-button';
 import { Screen } from '@/components/screen';
 import { ScreenHeader } from '@/components/screen-header';
 import { TextField } from '@/components/text-field';
@@ -112,6 +113,14 @@ export default function LogInteractionModal() {
           lockedFriend
             ? `With ${lockedFriend.name}`
             : 'Keep the memory fresh'
+        }
+        right={
+          <IconButton
+            icon="close"
+            accessibilityLabel="Close"
+            tone="neutral"
+            onPress={() => router.back()}
+          />
         }
       />
 
