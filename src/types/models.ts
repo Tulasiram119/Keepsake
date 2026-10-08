@@ -54,6 +54,7 @@ export interface Settings {
   birthdayRemindersEnabled: boolean;
   reminderTime: string;
   theme: ThemePreference;
+  lastBackupAt?: ISODate;
 }
 
 export type FriendInput = Omit<Friend, 'id' | 'createdAt' | 'updatedAt'>;

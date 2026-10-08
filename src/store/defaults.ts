@@ -8,6 +8,7 @@ export const DEFAULT_SETTINGS: Settings = {
   birthdayRemindersEnabled: true,
   reminderTime: '10:00',
   theme: 'system',
+  lastBackupAt: undefined,
 };
 
 export const EMPTY_DATA: PersistedState = {

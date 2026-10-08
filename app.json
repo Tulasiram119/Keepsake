@@ -32,7 +32,8 @@
           "image": "./assets/friend_13350962.png",
           "imageWidth": 120
         }
-      ]
+      ],
+      "expo-sharing"
     ],
     "experiments": {
       "typedRoutes": true,
