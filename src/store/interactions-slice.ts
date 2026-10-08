@@ -28,14 +28,18 @@ export const createInteractionsSlice: SliceCreator<InteractionsSlice> = (set) =>
     };
     set((s) => ({
       interactions: [...s.interactions, interaction],
-      // A contact on/after the planned day fulfils the plan.
-      friends: s.friends.map((f) =>
-        f.id === input.friendId &&
-        f.nextPlanned &&
-        differenceInCalendarDays(parseISO(input.date), parseISO(f.nextPlanned.at)) >= 0
-          ? { ...f, nextPlanned: undefined, updatedAt: now }
-          : f,
-      ),
+      friends: s.friends.map((f) => {
+        if (f.id !== input.friendId) return f;
+        const clearsPlanned =
+          f.nextPlanned &&
+          differenceInCalendarDays(parseISO(input.date), parseISO(f.nextPlanned.at)) >= 0;
+        return {
+          ...f,
+          snoozedUntil: undefined,
+          nextPlanned: clearsPlanned ? undefined : f.nextPlanned,
+          updatedAt: now,
+        };
+      }),
     }));
     return interaction;
   },

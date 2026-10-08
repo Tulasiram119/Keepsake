@@ -34,6 +34,29 @@ describe('friends', () => {
     expect(actions().friends[0].nextPlanned).toBeUndefined();
   });
 
+  it('snoozes a friend, skips cycle, and clears snooze', () => {
+    const f = actions().addFriend({ name: 'Ravi', repeatEveryDays: 7 });
+    expect(actions().friends[0].snoozedUntil).toBeUndefined();
+
+    actions().snoozeFriend(f.id, 3);
+    expect(actions().friends[0].snoozedUntil).toBe('2026-10-10T10:00:00.000Z');
+
+    actions().clearSnooze(f.id);
+    expect(actions().friends[0].snoozedUntil).toBeUndefined();
+
+    actions().skipCycle(f.id);
+    expect(actions().friends[0].snoozedUntil).toBe('2026-10-14T10:00:00.000Z');
+  });
+
+  it('clears snooze when logging an interaction', () => {
+    const f = actions().addFriend({ name: 'Ravi', repeatEveryDays: 7 });
+    actions().snoozeFriend(f.id, 3);
+    expect(actions().friends[0].snoozedUntil).toBeDefined();
+
+    actions().logInteraction({ friendId: f.id, type: 'called', date: '2026-10-07T10:00:00.000Z' });
+    expect(actions().friends[0].snoozedUntil).toBeUndefined();
+  });
+
   it('deleteFriend removes interactions and unlinks gratitude atomically', () => {
     const ravi = actions().addFriend({ name: 'Ravi' });
     const asha = actions().addFriend({ name: 'Asha' });
