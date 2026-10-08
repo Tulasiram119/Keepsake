@@ -20,6 +20,7 @@ export interface Friend {
   group?: string;
   repeatEveryDays?: number;
   nextPlanned?: PlannedContact;
+  snoozedUntil?: ISODate;
   createdAt: ISODate;
   updatedAt: ISODate;
   archived?: boolean;
