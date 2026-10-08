@@ -1,3 +1,5 @@
+import { addDays } from 'date-fns';
+
 import type { Friend, FriendInput, ID, PlannedContact } from '@/types/models';
 import { newId } from '@/utils/id';
 
@@ -9,6 +11,9 @@ export interface FriendsSlice {
   updateFriend: (id: ID, patch: Partial<FriendInput>) => void;
   setArchived: (id: ID, archived: boolean) => void;
   setPlannedContact: (id: ID, planned: PlannedContact | undefined) => void;
+  snoozeFriend: (id: ID, days: number) => void;
+  skipCycle: (id: ID) => void;
+  clearSnooze: (id: ID) => void;
   deleteFriend: (id: ID) => void;
 }
 
@@ -48,6 +53,22 @@ export const createFriendsSlice: SliceCreator<FriendsSlice> = (set, get) => ({
   setArchived: (id, archived) => get().updateFriend(id, { archived }),
 
   setPlannedContact: (id, planned) => get().updateFriend(id, { nextPlanned: planned }),
+
+  snoozeFriend: (id, days) => {
+    const until = addDays(new Date(), days).toISOString();
+    get().updateFriend(id, { snoozedUntil: until });
+  },
+
+  skipCycle: (id) => {
+    const friend = get().friends.find((f) => f.id === id);
+    const interval = friend?.repeatEveryDays ?? 7;
+    const until = addDays(new Date(), interval).toISOString();
+    get().updateFriend(id, { snoozedUntil: until });
+  },
+
+  clearSnooze: (id) => {
+    get().updateFriend(id, { snoozedUntil: undefined });
+  },
 
   deleteFriend: (id) => {
     const now = new Date().toISOString();

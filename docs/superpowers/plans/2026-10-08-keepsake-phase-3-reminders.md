@@ -34,13 +34,13 @@
 - Produces: `Settings` fields: `reminderTime: string`, `dailyPromptEnabled: boolean`, `dailyPromptTime: string`, `birthdayRemindersEnabled: boolean`
 - Produces: `DEFAULT_SETTINGS` in `src/store/defaults.ts`
 
-- [ ] **Step 1: Install `expo-notifications`**
+- [x] **Step 1: Install `expo-notifications`**
 
 ```bash
 npx expo install expo-notifications
 ```
 
-- [ ] **Step 2: Add Jest mock for `expo-notifications` in `jest.setup.ts`**
+- [x] **Step 2: Add Jest mock for `expo-notifications` in `jest.setup.ts`**
 
 Add the following mock to `jest.setup.ts`:
 
@@ -61,7 +61,7 @@ jest.mock('expo-notifications', () => ({
 }));
 ```
 
-- [ ] **Step 3: Update `src/types/models.ts`**
+- [x] **Step 3: Update `src/types/models.ts`**
 
 Extend `Friend` with `snoozedUntil?: ISODate` and `Settings` with notification settings:
 
@@ -92,7 +92,7 @@ export interface Settings {
 }
 ```
 
-- [ ] **Step 4: Update `src/store/defaults.ts`**
+- [x] **Step 4: Update `src/store/defaults.ts`**
 
 ```ts
 import type { Settings } from '@/types/models';
@@ -106,12 +106,12 @@ export const DEFAULT_SETTINGS: Settings = {
 };
 ```
 
-- [ ] **Step 5: Verify tests and typecheck**
+- [x] **Step 5: Verify tests and typecheck**
 
 Run: `npm test && npm run typecheck`  
 Expected: PASS
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add package.json package-lock.json jest.setup.ts src/types/models.ts src/store/defaults.ts
@@ -131,7 +131,7 @@ git commit -m "feat(reminders): install expo-notifications, add mock, and extend
 - Produces: `CadenceStatus = 'none' | 'on-track' | 'due' | 'overdue' | 'snoozed'`
 - Produces: updated `computeCadenceStatus` and `buildDashboard` respecting snooze
 
-- [ ] **Step 1: Write failing tests in `src/utils/__tests__/derived.test.ts`**
+- [x] **Step 1: Write failing tests in `src/utils/__tests__/derived.test.ts`**
 
 Add tests for `snoozedUntil`:
 
@@ -167,12 +167,12 @@ describe('computeCadenceStatus with snooze', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx jest src/utils/__tests__/derived.test.ts -t "with snooze"`  
 Expected: FAIL
 
-- [ ] **Step 3: Update `src/utils/derived.ts`**
+- [x] **Step 3: Update `src/utils/derived.ts`**
 
 Update `CadenceStatus` type and `computeCadenceStatus`:
 
@@ -216,12 +216,12 @@ Ensure `snoozed` status entries are not treated as overdue:
 const isOverdue = status === 'overdue' || status === 'due';
 ```
 
-- [ ] **Step 4: Run tests to verify all pass**
+- [x] **Step 4: Run tests to verify all pass**
 
 Run: `npx jest src/utils/__tests__/derived.test.ts`  
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/utils/derived.ts src/utils/__tests__/derived.test.ts
@@ -244,7 +244,7 @@ git commit -m "feat(reminders): add snooze handling to cadence calculations"
 - Produces: `clearSnooze(id: ID)`
 - Produces: `logInteraction` clearing `snoozedUntil`
 
-- [ ] **Step 1: Write failing tests in `src/store/__tests__/store.test.ts`**
+- [x] **Step 1: Write failing tests in `src/store/__tests__/store.test.ts`**
 
 ```ts
 it('snoozes a friend, skips cycle, and clears snooze when moment is logged', () => {
@@ -267,12 +267,12 @@ it('snoozes a friend, skips cycle, and clears snooze when moment is logged', () 
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx jest src/store/__tests__/store.test.ts`  
 Expected: FAIL
 
-- [ ] **Step 3: Implement actions in `src/store/friends-slice.ts`**
+- [x] **Step 3: Implement actions in `src/store/friends-slice.ts`**
 
 Add methods to `FriendsSlice`:
 ```ts
@@ -317,12 +317,12 @@ get().clearSnooze(input.friendId);
 In `src/store/hooks.ts`:
 Expose `snoozeFriend`, `skipCycle`, `clearSnooze` in `appActions()`.
 
-- [ ] **Step 4: Run tests to verify all pass**
+- [x] **Step 4: Run tests to verify all pass**
 
 Run: `npx jest src/store/__tests__/store.test.ts`  
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/store/friends-slice.ts src/store/interactions-slice.ts src/store/hooks.ts src/store/__tests__/store.test.ts
@@ -344,7 +344,7 @@ git commit -m "feat(reminders): add snooze, skip, and reset-on-interaction store
 - Produces: `schedulePlannedNotification(friend: Friend): Promise<string | undefined>`
 - Produces: `cancelNotification(notificationId: string): Promise<void>`
 
-- [ ] **Step 1: Write test `src/services/__tests__/notifications.test.ts`**
+- [x] **Step 1: Write test `src/services/__tests__/notifications.test.ts`**
 
 ```ts
 import * as Notifications from 'expo-notifications';
@@ -386,12 +386,12 @@ describe('syncAllNotifications', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx jest src/services/__tests__/notifications.test.ts`  
 Expected: FAIL (module not found)
 
-- [ ] **Step 3: Implement `src/services/notifications.ts`**
+- [x] **Step 3: Implement `src/services/notifications.ts`**
 
 Implement full service:
 - Initialize Android channel and notification handler if native platform (`Platform.OS !== 'web'`).
@@ -406,12 +406,12 @@ Implement full service:
   - Schedule birthday reminders if enabled for upcoming birthdays.
   - Schedule daily gratitude prompt if enabled.
 
-- [ ] **Step 4: Run tests to verify all pass**
+- [x] **Step 4: Run tests to verify all pass**
 
 Run: `npx jest src/services/__tests__/notifications.test.ts`  
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/services/notifications.ts src/services/__tests__/notifications.test.ts
@@ -428,7 +428,7 @@ git commit -m "feat(reminders): implement notifications service and resync engin
 **Interfaces:**
 - Consumes: `useSettings()`, `appActions().updateSettings`, `requestNotificationPermissionsAsync()`, `syncAllNotifications()`
 
-- [ ] **Step 1: Implement Reminders section in `src/app/(tabs)/settings.tsx`**
+- [x] **Step 1: Implement Reminders section in `src/app/(tabs)/settings.tsx`**
 
 Replace the muted "Coming soon" card with:
 1. Permission status badge / "Enable Notifications" button if permission is not granted.
@@ -437,12 +437,12 @@ Replace the muted "Coming soon" card with:
 4. Daily gratitude prompt switch toggle + time chips ("19:00", "20:00", "21:00").
 5. On setting change, call `appActions().updateSettings(...)` and trigger `syncAllNotifications(useAppStore.getState())`.
 
-- [ ] **Step 2: Verify typecheck & test**
+- [x] **Step 2: Verify typecheck & test**
 
 Run: `npm test && npm run typecheck`  
 Expected: PASS
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/app/(tabs)/settings.tsx
@@ -459,7 +459,7 @@ git commit -m "feat(reminders): add full reminders configuration to settings scr
 **Interfaces:**
 - Consumes: `appActions().snoozeFriend`, `skipCycle`, `clearSnooze`, `setPlannedContact`
 
-- [ ] **Step 1: Add Snooze & Skip controls to `src/app/friend/[id].tsx`**
+- [x] **Step 1: Add Snooze & Skip controls to `src/app/friend/[id].tsx`**
 
 1. In Cadence card:
    - If friend is snoozed (`friend.snoozedUntil` in the future):
@@ -475,12 +475,12 @@ git commit -m "feat(reminders): add full reminders configuration to settings scr
    - When saving a planned contact, automatically request permission if needed and trigger notification sync.
    - When clearing a planned contact, remove notification.
 
-- [ ] **Step 2: Verify typecheck & test**
+- [x] **Step 2: Verify typecheck & test**
 
 Run: `npm test && npm run typecheck`  
 Expected: PASS
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/app/friend/[id].tsx
@@ -495,11 +495,11 @@ git commit -m "feat(reminders): add snooze, skip, and planned contact notificati
 - Modify: `src/app/_layout.tsx` (call `syncAllNotifications` on app mount once hydrated)
 - Test: Full test suite
 
-- [ ] **Step 1: Hook up hydration sync in `src/app/_layout.tsx`**
+- [x] **Step 1: Hook up hydration sync in `src/app/_layout.tsx`**
 
 When `hasHydrated` becomes true on native platforms, trigger `syncAllNotifications(store.getState())` in a background effect.
 
-- [ ] **Step 2: Run complete verification suite**
+- [x] **Step 2: Run complete verification suite**
 
 ```bash
 npm test
@@ -508,7 +508,7 @@ npx expo lint
 npx expo export --platform web
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/app/_layout.tsx

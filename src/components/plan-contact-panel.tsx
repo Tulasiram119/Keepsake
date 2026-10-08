@@ -6,6 +6,11 @@ import { Card } from './card';
 import { Chip } from './chip';
 import { DateField } from './date-field';
 import { ThemedText } from './themed-text';
+import {
+  requestNotificationPermissionsAsync,
+  syncAllNotifications,
+} from '@/services/notifications';
+import { useAppStore } from '@/store';
 import { appActions } from '@/store/hooks';
 import { useTheme } from '@/theme/use-theme';
 import type { Friend, InteractionType } from '@/types/models';
@@ -33,11 +38,15 @@ export function PlanContactPanel({ friend, onDone }: PlanContactPanelProps) {
       at,
       type,
     });
+    void requestNotificationPermissionsAsync().finally(() => {
+      void syncAllNotifications(useAppStore.getState());
+    });
     onDone();
   };
 
   const handleClear = () => {
     appActions().setPlannedContact(friend.id, undefined);
+    void syncAllNotifications(useAppStore.getState());
     onDone();
   };
 

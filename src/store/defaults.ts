@@ -5,7 +5,7 @@ import type { PersistedState } from './types';
 export const DEFAULT_SETTINGS: Settings = {
   dailyPromptEnabled: false,
   dailyPromptTime: '20:00',
-  birthdayRemindersEnabled: false,
+  birthdayRemindersEnabled: true,
   reminderTime: '10:00',
   theme: 'system',
 };

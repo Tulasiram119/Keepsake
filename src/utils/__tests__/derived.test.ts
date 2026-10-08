@@ -68,6 +68,14 @@ describe('repeat interval status', () => {
     const f = friend('a', { repeatEveryDays: 7, createdAt: daysAgo(3) });
     expect(daysUntilDue(f, undefined, now)).toBe(4);
   });
+  it('returns snoozed when snoozedUntil is in the future', () => {
+    const f = friend('a', { repeatEveryDays: 7, snoozedUntil: daysAgo(-3) });
+    expect(contactStatus(f, interaction('i', 'a', 15), now)).toBe('snoozed');
+  });
+  it('resumes normal overdue status when snoozedUntil is in the past', () => {
+    const f = friend('a', { repeatEveryDays: 7, snoozedUntil: daysAgo(2) });
+    expect(contactStatus(f, interaction('i', 'a', 15), now)).toBe('overdue');
+  });
 });
 
 describe('gratitude selectors', () => {
