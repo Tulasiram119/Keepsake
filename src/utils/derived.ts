@@ -4,8 +4,17 @@ import type { Friend, GratitudeEntry, ID, ISODate, Interaction } from '@/types/m
 import { daysSince, relativeDays } from '@/utils/dates';
 import { INTERACTION_META } from '@/utils/interaction-meta';
 
-export type ContactStatus = 'none' | 'ok' | 'soon' | 'overdue';
+export type ContactStatus = 'none' | 'ok' | 'soon' | 'overdue' | 'snoozed';
 export const DUE_SOON_DAYS = 2;
+
+export function isSnoozed(friend: Friend, now: Date): boolean {
+  if (!friend.snoozedUntil) return false;
+  try {
+    return parseISO(friend.snoozedUntil) > now;
+  } catch {
+    return false;
+  }
+}
 
 /** ISO strings from toISOString() sort lexicographically. */
 export function byDateDesc<T extends { date: ISODate }>(a: T, b: T): number {
@@ -35,13 +44,16 @@ export function interactionsForFriend(friendId: ID, interactions: Interaction[])
   return interactions.filter((i) => i.friendId === friendId).sort(byDateDesc);
 }
 
-export function dueDateFor(friend: Friend, last?: Interaction): Date | undefined {
+export function dueDateFor(friend: Friend, last?: Interaction, now?: Date): Date | undefined {
+  if (now && isSnoozed(friend, now)) {
+    return parseISO(friend.snoozedUntil!);
+  }
   if (!friend.repeatEveryDays) return undefined;
   return addDays(parseISO(last?.date ?? friend.createdAt), friend.repeatEveryDays);
 }
 
 export function daysUntilDue(friend: Friend, last: Interaction | undefined, now: Date): number | undefined {
-  const due = dueDateFor(friend, last);
+  const due = dueDateFor(friend, last, now);
   return due ? differenceInCalendarDays(due, now) : undefined;
 }
 
@@ -53,6 +65,7 @@ function statusFromDaysUntilDue(days: number | undefined): ContactStatus {
 }
 
 export function contactStatus(friend: Friend, last: Interaction | undefined, now: Date): ContactStatus {
+  if (isSnoozed(friend, now)) return 'snoozed';
   return statusFromDaysUntilDue(daysUntilDue(friend, last, now));
 }
 
@@ -110,7 +123,7 @@ export function buildDashboard(
       return {
         friend,
         last,
-        status: statusFromDaysUntilDue(due),
+        status: contactStatus(friend, last, now),
         daysSinceContact: last ? daysSince(last.date, now) : undefined,
         daysUntilDue: due,
         latestGratitude: gratitudeBy.get(friend.id),
@@ -132,6 +145,7 @@ export function statusMessage(
   entry: Pick<DashboardEntry, 'friend' | 'status' | 'daysUntilDue'>,
 ): string | undefined {
   const name = firstName(entry.friend.name);
+  if (entry.status === 'snoozed') return `Snoozed for now`;
   if (entry.status === 'overdue') return `It's been a while since you spoke with ${name}`;
   if (entry.status === 'soon') {
     return entry.daysUntilDue === 0
