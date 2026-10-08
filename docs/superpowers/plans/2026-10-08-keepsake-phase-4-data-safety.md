@@ -1,6 +1,6 @@
 # Keepsake Phase 4: Data Safety (Export, Import & Backup) Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Implement full offline JSON backup export, schema-validated import with migration support, dedicated import preview screen with Merge/Replace resolution, automatic notification resynchronization, and Settings backup health monitoring.
 
@@ -34,13 +34,13 @@
 - Produces: `Settings.lastBackupAt?: ISODate`
 - Produces: Mocks for `expo-file-system`, `expo-sharing`, `expo-document-picker` in `jest.setup.ts`
 
-- [ ] **Step 1: Install `expo-file-system`, `expo-sharing`, `expo-document-picker`, and `zod`**
+- [x] **Step 1: Install `expo-file-system`, `expo-sharing`, `expo-document-picker`, and `zod`**
 
 ```bash
 npx expo install expo-file-system expo-sharing expo-document-picker zod
 ```
 
-- [ ] **Step 2: Add Jest mocks for new Expo modules in `jest.setup.ts`**
+- [x] **Step 2: Add Jest mocks for new Expo modules in `jest.setup.ts`**
 
 Add mocks for `expo-file-system`, `expo-sharing`, and `expo-document-picker` to `jest.setup.ts`:
 
@@ -64,7 +64,7 @@ jest.mock('expo-document-picker', () => ({
 }));
 ```
 
-- [ ] **Step 3: Extend `Settings` in `src/types/models.ts`**
+- [x] **Step 3: Extend `Settings` in `src/types/models.ts`**
 
 Update `Settings` in `src/types/models.ts`:
 ```ts
@@ -78,7 +78,7 @@ export interface Settings {
 }
 ```
 
-- [ ] **Step 4: Update `DEFAULT_SETTINGS` in `src/store/defaults.ts`**
+- [x] **Step 4: Update `DEFAULT_SETTINGS` in `src/store/defaults.ts`**
 
 Update `DEFAULT_SETTINGS` in `src/store/defaults.ts`:
 ```ts
@@ -92,12 +92,12 @@ export const DEFAULT_SETTINGS: Settings = {
 };
 ```
 
-- [ ] **Step 5: Run existing tests to verify zero regressions**
+- [x] **Step 5: Run existing tests to verify zero regressions**
 
 Run: `npm test && npm run typecheck`
 Expected: PASS (all suites passing)
 
-- [ ] **Step 6: Commit changes**
+- [x] **Step 6: Commit changes**
 
 ```bash
 git add package.json package-lock.json jest.setup.ts src/types/models.ts src/store/defaults.ts
@@ -118,7 +118,7 @@ git commit -m "feat(backup): install packages, configure jest mocks, and add las
 - Produces: `BackupFile` type
 - Produces: `validateAndMigrateBackup(raw: unknown): { success: true; data: BackupFile } | { success: false; error: string }`
 
-- [ ] **Step 1: Write failing test suite for backup schema and migrations**
+- [x] **Step 1: Write failing test suite for backup schema and migrations**
 
 Create `src/services/__tests__/backup-schema.test.ts`:
 ```ts
@@ -212,12 +212,12 @@ describe('Backup Schema & Migration Engine', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx jest src/services/__tests__/backup-schema.test.ts`
 Expected: FAIL (module not found)
 
-- [ ] **Step 3: Implement `src/services/backup-schema.ts`**
+- [x] **Step 3: Implement `src/services/backup-schema.ts`**
 
 Write `src/services/backup-schema.ts`:
 ```ts
@@ -328,12 +328,12 @@ export function validateAndMigrateBackup(raw: unknown): ValidateBackupResult {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx jest src/services/__tests__/backup-schema.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Commit changes**
+- [x] **Step 5: Commit changes**
 
 ```bash
 git add src/services/backup-schema.ts src/services/__tests__/backup-schema.test.ts
@@ -353,7 +353,7 @@ git commit -m "feat(backup): add zod schema validation and migration engine for 
 - Produces: `useAppStore.getState().importBackup(backup: BackupFile, mode: 'merge' | 'replace'): ImportSummary`
 - Produces: `ImportSummary` interface
 
-- [ ] **Step 1: Write failing test suite for `importBackup` in `src/store/__tests__/import.test.ts`**
+- [x] **Step 1: Write failing test suite for `importBackup` in `src/store/__tests__/import.test.ts`**
 
 Create `src/store/__tests__/import.test.ts`:
 ```ts
@@ -460,12 +460,12 @@ describe('Store Backup Import Actions', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx jest src/store/__tests__/import.test.ts`
 Expected: FAIL (`importBackup is not a function`)
 
-- [ ] **Step 3: Implement `importBackup` in `src/store/index.ts`**
+- [x] **Step 3: Implement `importBackup` in `src/store/index.ts`**
 
 Define `ImportSummary` and `ImportMode` in `src/store/types.ts`:
 ```ts
@@ -562,12 +562,12 @@ importBackup: (backup: BackupFile, mode: ImportMode): ImportSummary => {
 },
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx jest src/store/__tests__/import.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Commit changes**
+- [x] **Step 5: Commit changes**
 
 ```bash
 git add src/store/types.ts src/store/index.ts src/store/__tests__/import.test.ts
@@ -589,7 +589,7 @@ git commit -m "feat(store): implement atomic importBackup action with merge and 
 - Produces: `getStagedBackup(): BackupFile | null`
 - Produces: `clearStagedBackup(): void`
 
-- [ ] **Step 1: Write unit tests for `backup.ts` in `src/services/__tests__/backup.test.ts`**
+- [x] **Step 1: Write unit tests for `backup.ts` in `src/services/__tests__/backup.test.ts`**
 
 Create `src/services/__tests__/backup.test.ts`:
 ```ts
@@ -647,12 +647,12 @@ describe('Backup Service', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx jest src/services/__tests__/backup.test.ts`
 Expected: FAIL (module not found)
 
-- [ ] **Step 3: Implement `src/services/backup.ts`**
+- [x] **Step 3: Implement `src/services/backup.ts`**
 
 Write `src/services/backup.ts` with platform guards, serialization, share sheet integration, and staging holder:
 ```ts
@@ -793,12 +793,12 @@ export async function pickAndValidateBackupAsync(): Promise<PickBackupResult> {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx jest src/services/__tests__/backup.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Commit changes**
+- [x] **Step 5: Commit changes**
 
 ```bash
 git add src/services/backup.ts src/services/__tests__/backup.test.ts
@@ -817,7 +817,7 @@ git commit -m "feat(backup): implement export, document picking, and staging in 
 - Renders: Recency status ("Last backup: 3 days ago", "Never")
 - Renders: Gentle notice banner if `lastBackupAt` is >30 days ago (or absent with data)
 
-- [ ] **Step 1: Update "Your Data" card in `src/app/(tabs)/settings.tsx`**
+- [x] **Step 1: Update "Your Data" card in `src/app/(tabs)/settings.tsx`**
 
 Replace the placeholder/coming soon block in `src/app/(tabs)/settings.tsx` with:
 - "Export Backup" button with share icon
@@ -827,12 +827,12 @@ Replace the placeholder/coming soon block in `src/app/(tabs)/settings.tsx` with:
 - Error alert handler when `pickAndValidateBackupAsync` returns `{ status: 'error' }`
 - Routing to `/import-preview` when `pickAndValidateBackupAsync` returns `{ status: 'success' }`
 
-- [ ] **Step 2: Verify Settings screen renders cleanly and passes tests**
+- [x] **Step 2: Verify Settings screen renders cleanly and passes tests**
 
 Run: `npm test && npm run typecheck`
 Expected: PASS
 
-- [ ] **Step 3: Commit changes**
+- [x] **Step 3: Commit changes**
 
 ```bash
 git add src/app/\(tabs\)/settings.tsx
@@ -851,7 +851,7 @@ git commit -m "feat(settings): upgrade Your Data card with backup export, import
 - Consumes: `getStagedBackup()`, `clearStagedBackup()`, `useAppStore().importBackup`, `syncAllNotifications`
 - Produces: Modal screen registered with Expo Router in `src/app/_layout.tsx`
 
-- [ ] **Step 1: Register `/import-preview` route in `src/app/_layout.tsx`**
+- [x] **Step 1: Register `/import-preview` route in `src/app/_layout.tsx`**
 
 Add stack screen to `src/app/_layout.tsx`:
 ```tsx
@@ -864,7 +864,7 @@ Add stack screen to `src/app/_layout.tsx`:
 />
 ```
 
-- [ ] **Step 2: Implement `src/app/import-preview.tsx`**
+- [x] **Step 2: Implement `src/app/import-preview.tsx`**
 
 Build the preview screen:
 - Reads `getStagedBackup()`. If empty or null, renders a friendly fallback and offers a button to return to Settings.
@@ -886,12 +886,12 @@ Build the preview screen:
   - **"Cancel"** (`Button` variant="ghost")
     - Clears staged backup and calls `router.back()`.
 
-- [ ] **Step 3: Run tests and typecheck**
+- [x] **Step 3: Run tests and typecheck**
 
 Run: `npm test && npm run typecheck`
 Expected: PASS
 
-- [ ] **Step 4: Commit changes**
+- [x] **Step 4: Commit changes**
 
 ```bash
 git add src/app/import-preview.tsx src/app/_layout.tsx
@@ -905,27 +905,27 @@ git commit -m "feat(backup): create import preview modal screen with merge and r
 **Files:**
 - All touched files
 
-- [ ] **Step 1: Run comprehensive test suite**
+- [x] **Step 1: Run comprehensive test suite**
 
 Run: `npm test`
 Expected: PASS (all tests pass)
 
-- [ ] **Step 2: Run TypeScript typecheck**
+- [x] **Step 2: Run TypeScript typecheck**
 
 Run: `npm run typecheck`
 Expected: PASS (0 errors)
 
-- [ ] **Step 3: Run Expo linter**
+- [x] **Step 3: Run Expo linter**
 
 Run: `npx expo lint`
 Expected: PASS (0 lint warnings or errors)
 
-- [ ] **Step 4: Run expo-doctor**
+- [x] **Step 4: Run expo-doctor**
 
 Run: `npx expo-doctor`
 Expected: PASS (no dependency/config issues)
 
-- [ ] **Step 5: Final commit if any polish touches made**
+- [x] **Step 5: Final commit if any polish touches made**
 
 ```bash
 git status
