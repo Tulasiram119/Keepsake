@@ -4,6 +4,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { storageAdapter } from '@/storage/adapter';
 
 import { DEFAULT_SETTINGS } from './defaults';
+import { createBackupSlice } from './backup-slice';
 import { createFriendsSlice } from './friends-slice';
 import { createGratitudeSlice } from './gratitude-slice';
 import { createInteractionsSlice } from './interactions-slice';
@@ -21,6 +22,7 @@ export const useAppStore = create<AppState>()(
       ...createInteractionsSlice(...a),
       ...createGratitudeSlice(...a),
       ...createSettingsSlice(...a),
+      ...createBackupSlice(...a),
       hasHydrated: false,
     }),
     {
