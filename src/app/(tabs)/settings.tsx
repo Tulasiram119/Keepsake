@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import Constants from 'expo-constants';
-import { Platform, StyleSheet, Switch, View } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { differenceInDays, formatDistanceToNow } from 'date-fns';
+import { router } from 'expo-router';
+import { Alert, Platform, StyleSheet, Switch, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
@@ -8,6 +11,7 @@ import { Chip } from '@/components/chip';
 import { Screen } from '@/components/screen';
 import { ScreenHeader } from '@/components/screen-header';
 import { ThemedText } from '@/components/themed-text';
+import { exportBackupAsync, pickAndValidateBackupAsync } from '@/services/backup';
 import {
   getNotificationPermissionStatusAsync,
   requestNotificationPermissionsAsync,
@@ -46,6 +50,8 @@ export default function SettingsScreen() {
   const { colors, radius, spacing } = useTheme();
 
   const [hasPermission, setHasPermission] = useState<boolean>(true);
+  const [isExporting, setIsExporting] = useState<boolean>(false);
+  const [isImporting, setIsImporting] = useState<boolean>(false);
 
   useEffect(() => {
     if (Platform.OS !== 'web') {
@@ -71,6 +77,58 @@ export default function SettingsScreen() {
       void syncAllNotifications(useAppStore.getState());
     }
   };
+
+  const handleExportBackup = async () => {
+    setIsExporting(true);
+    try {
+      const res = await exportBackupAsync();
+      if (!res.success) {
+        Alert.alert('Export Failed', res.error ?? 'Could not export backup.');
+      }
+    } catch (err) {
+      Alert.alert('Export Error', err instanceof Error ? err.message : 'Something went wrong.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleImportBackup = async () => {
+    setIsImporting(true);
+    try {
+      const res = await pickAndValidateBackupAsync();
+      if (res.status === 'cancelled') {
+        return;
+      }
+      if (res.status === 'error') {
+        Alert.alert('Unable to Import Backup', res.message);
+        return;
+      }
+      router.push('/import-preview' as unknown as Parameters<typeof router.push>[0]);
+    } catch (err) {
+      Alert.alert('Import Error', err instanceof Error ? err.message : 'Could not read backup file.');
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
+  const hasRecords = friends.length > 0 || interactions.length > 0 || gratitudeList.length > 0;
+  let backupStatusText = 'No backup saved yet';
+  let isBackupOverdue = false;
+
+  if (settings.lastBackupAt) {
+    try {
+      const backupDate = new Date(settings.lastBackupAt);
+      backupStatusText = `Last backup: ${formatDistanceToNow(backupDate, { addSuffix: true })}`;
+      const daysSince = differenceInDays(new Date(), backupDate);
+      if (daysSince >= 30) {
+        isBackupOverdue = true;
+      }
+    } catch {
+      backupStatusText = 'Last backup: Unknown date';
+    }
+  } else if (hasRecords) {
+    isBackupOverdue = true;
+  }
 
   const appVersion = Constants.expoConfig?.version ?? '1.0.0';
 
@@ -265,7 +323,7 @@ export default function SettingsScreen() {
             ]}
           >
             <ThemedText variant="small" color="textSecondary">
-              Coming soon
+              Offline & Private
             </ThemedText>
           </View>
         </View>
@@ -273,11 +331,72 @@ export default function SettingsScreen() {
         <ThemedText
           variant="body"
           color="textSecondary"
-          style={{ marginTop: spacing.xs, marginBottom: spacing.md }}
+          style={{ marginTop: spacing.xs, marginBottom: spacing.sm }}
         >
-          Everything stays private on your phone. Export and import backups are
-          on the way.
+          Everything stays private on your phone. Export a backup to save your
+          memories, or restore records from a JSON file.
         </ThemedText>
+
+        <View
+          style={[
+            styles.backupStatusRow,
+            {
+              backgroundColor: colors.surfaceAlt,
+              borderRadius: radius.sm,
+              padding: spacing.sm,
+              marginBottom: spacing.sm,
+            },
+          ]}
+        >
+          <Ionicons
+            name="shield-checkmark-outline"
+            size={18}
+            color={colors.primary}
+            style={{ marginRight: spacing.xs }}
+          />
+          <ThemedText variant="smallStrong" color="text">
+            {backupStatusText}
+          </ThemedText>
+        </View>
+
+        {isBackupOverdue && (
+          <View
+            style={[
+              styles.nudgeBanner,
+              {
+                backgroundColor: colors.secondarySoft,
+                borderColor: colors.border,
+                borderRadius: radius.sm,
+                padding: spacing.sm,
+                marginBottom: spacing.md,
+              },
+            ]}
+          >
+            <ThemedText variant="small" color="text">
+              🌿 It&apos;s been a while since your last backup. Keep your
+              memories safe by exporting a copy.
+            </ThemedText>
+          </View>
+        )}
+
+        <View style={[styles.dataButtonsRow, { gap: spacing.sm, marginBottom: spacing.md }]}>
+          <Button
+            label={isExporting ? 'Exporting...' : 'Export Backup'}
+            icon="share-outline"
+            variant="secondary"
+            disabled={isExporting || isImporting}
+            onPress={handleExportBackup}
+            style={{ flex: 1 }}
+          />
+          <Button
+            label={isImporting ? 'Reading...' : 'Import Backup'}
+            icon="cloud-download-outline"
+            variant="secondary"
+            disabled={isExporting || isImporting}
+            onPress={handleImportBackup}
+            style={{ flex: 1 }}
+          />
+        </View>
 
         <View
           style={[
@@ -340,6 +459,17 @@ const styles = StyleSheet.create({
   permissionBanner: {
     width: '100%',
   },
+  backupStatusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  nudgeBanner: {
+    borderWidth: 1,
+  },
+  dataButtonsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   statsBox: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -350,3 +480,4 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
   },
 });
+
